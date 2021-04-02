@@ -81,16 +81,10 @@ def get_processed_frame(frame, box, w, h):
     return new_frame
 
 
-
-
-
-
 if __name__ == "__main__":
-
     # bbox = [-0.1, -0.2, 0.7, 1.1]
     # im = torch.rand(3, 64, 52)
     # im2 = get_processed_frame(im, bbox, 30, 30)
-
     frame_file = sys.argv[1]
     bboxes_file = sys.argv[2]
 
@@ -117,16 +111,3 @@ if __name__ == "__main__":
     # new_frame : h * w * 3
     new_frame = new_frame.numpy().transpose(2, 1, 0)
     cv2.imwrite("formatted_frame.jpg", new_frame)
-
-
-
-
-
-
-
-
-
-
-
-
-
