@@ -6,12 +6,13 @@ import os
 from pathlib import Path
 
 
-frames_root_dir = "/home/acances/Data/Ava_v2.2/train_videos/frames"
+# frames_root_dir = "/home/acances/Data/Ava_v2.2/train_videos/frames"
+frames_root_dir = "/home/acances/Code/ava"
 
 tracks_root_dir = "/home/acances/Data/Ava_v2.2/normalized_tracks/train"
 
 # target_root_dir = "/home/acances/Code/ava/annotated_frames"
-target_root_dir = "/home/acances/Code/ava/new_annotated_frames"
+target_root_dir = "/home/acances/Code/ava/newer_annotated_frames_first"
 
 
 def make_annotated_frame(frame_file, new_frame_file, boxes):

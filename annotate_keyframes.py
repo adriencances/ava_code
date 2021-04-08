@@ -6,11 +6,13 @@ import os
 from pathlib import Path
 
 
-frames_root_dir = "/home/acances/Data/Ava_v2.2/train_videos/frames"
+# frames_root_dir = "/home/acances/Data/Ava_v2.2/train_videos/frames"
+frames_root_dir = "/home/acances/Data/Ava_v2.2"
 
 bboxes_root_dir = "/home/acances/Data/Ava_v2.2/bboxes_by_keyframes/train"
 
-target_root_dir = "/home/acances/Code/ava/keyframes_annotated_first/train"
+# target_root_dir = "/home/acances/Code/ava/keyframes_annotated_first/train"
+target_root_dir = "/home/acances/Code/ava/new_keyframes_annotated_first/train"
 
 
 def make_annotated_frame(frame_file, new_frame_file, boxes):
@@ -42,8 +44,8 @@ def annotate_timestamp(video_id, timestamp):
 
     frames_files = sorted(glob.glob(frames_folder + "/*"))
     nb_frames = len(frames_files)
-    # keyframe_file = frames_files[nb_frames//2]
-    keyframe_file = frames_files[0]
+    keyframe_file = frames_files[nb_frames//2]
+    # keyframe_file = frames_files[0]
 
     bboxes_file = "{}/{}/{:05d}_bboxes.csv".format(bboxes_root_dir, video_id, timestamp)
     if not os.path.isfile(bboxes_file):
