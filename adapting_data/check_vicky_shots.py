@@ -7,7 +7,6 @@ shots_files = glob.glob("/home/acances/Data/Ava_v2.2/shots/train/*")
 
 def check_shot_file(file):
     video_id = file.split("/")[-1].split(".")[0][6:]
-    # print(video_id)
     boundaries = []
     with open(file, "r") as f:
         for line in f:

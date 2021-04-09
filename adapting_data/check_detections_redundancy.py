@@ -2,6 +2,7 @@ import pickle
 import numpy as np
 import sys
 import glob
+import tqdm
 from pathlib import Path
 
 
@@ -73,15 +74,4 @@ def check_redundancy(video_id, output_dir, cat):
 
     # print("\t".join(interesting_timestamps))
     # print("Nb interesting timestamps: \t", len(interesting_timestamps))
-    # print("Nb entries: \t", "\t".join(map(str, nb_entries_values)))
-
-
-
-
-if __name__ == "__main__":
-    video_id = sys.argv[1]
-    output_file = "detections_no_redundancy.csv"
-    check_redundancy(video_id, output_file)
-
-    
-
+    # print("Nb entries: \t", "\t".join(map(str, nb_entries_values)))    
