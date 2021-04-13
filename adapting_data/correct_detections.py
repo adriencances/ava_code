@@ -45,6 +45,7 @@ if __name__ == "__main__":
     if confirm != "yes":
         print("Confirm by providing 'yes' as argument")
         sys.exit(1)
+
     redundancies_files = glob.glob("{}/train/*".format(redundancies_dir))
     redundancies_files += glob.glob("{}/val/*".format(redundancies_dir))
     for redundancy_file in tqdm.tqdm(redundancies_files):

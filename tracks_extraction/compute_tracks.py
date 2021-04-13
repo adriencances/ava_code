@@ -24,6 +24,7 @@ shots_dir = "/home/acances/Data/Ava_v2.2/final_shots"
 detections_dir = "/home/acances/Data/Ava_v2.2/final_detectron2_detections"
 tracks_dir = "/home/acances/Data/Ava_v2.2/tracks"
 
+
 def get_shots(shots_file):
     shots = []
     with open(shots_file, "r") as f:
@@ -89,6 +90,10 @@ if __name__ == "__main__":
         print("Confirm by providing 'yes' as argument")
         sys.exit(1)
     
+    if os.environ['CONDA_DEFAULT_ENV'] != "tf-gpu":
+        print("Use 'tf-gpu' conda environment")
+        sys.exit(1)
+
     shots_files = glob.glob("{}/train/*".format(shots_dir))
     shots_files += glob.glob("{}/val/*".format(shots_dir))
 

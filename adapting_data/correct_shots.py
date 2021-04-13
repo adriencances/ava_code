@@ -40,7 +40,7 @@ def correct_shots(redundancy_file):
                 if n2 > index:
                     n2 -= 1
             boundaries.append([(t1, n1), (t2, n2)])
-
+    
     with open(shots_file, "w") as f:
         for start, end in boundaries:
             t1, n1 = start
@@ -56,6 +56,7 @@ if __name__ == "__main__":
     if confirm != "yes":
         print("Confirm by providing 'yes' as argument")
         sys.exit(1)
+
     redundancies_files = glob.glob("{}/train/*".format(redundancies_dir))
     redundancies_files += glob.glob("{}/val/*".format(redundancies_dir))
     for redundancy_file in tqdm.tqdm(redundancies_files):
