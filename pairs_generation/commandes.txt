@@ -1,1 +1,0 @@
-python pairs_generation.py ~/Data/Ava_v2.2/train_videos/frames/26V9UzqSguo/00902/00001.jpg ~/Data/Ava_v2.2/bboxes_by_keyframes/train/26V9UzqSguo/00902_bboxes.csv
