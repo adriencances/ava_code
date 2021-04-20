@@ -10,13 +10,14 @@ import random as rd
 
 
 tracks_dir = "/home/acances/Data/Ava_v2.2/tracks"
-pairs_dir = "/home/acances/Data/Ava_v2.2/pairs/"
+pairs_dir = "/home/acances/Data/Ava_v2.2/pairs16/"
 
 Path(pairs_dir).mkdir(parents=True, exist_ok=True)
 
 
 #  PARAMETERS
-SEGMENT_LENGTH = 64
+SEGMENT_LENGTH = 16
+NB_PAIRS_BY_VIDEO_PAIR = 18
 
 
 def random_element_of(L):
@@ -55,7 +56,7 @@ def compute_easy_negative_pairs(cat):
         video_folder_1 = video_folders[id1]
         for id2 in range(id1 + 1, len(video_folders)):
             video_folder_2 = video_folders[id2]
-            for i in range(4):
+            for i in range(NB_PAIRS_BY_VIDEO_PAIR):
                 segment_1 = get_random_segment(video_folder_1)
                 segment_2 = get_random_segment(video_folder_2)
                 pair = segment_1 + segment_2

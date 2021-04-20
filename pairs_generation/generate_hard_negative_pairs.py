@@ -9,16 +9,16 @@ import pickle
 
 
 tracks_dir = "/home/acances/Data/Ava_v2.2/tracks"
-pairs_dir = "/home/acances/Data/Ava_v2.2/pairs/"
+pairs_dir = "/home/acances/Data/Ava_v2.2/pairs16/"
 
 Path(pairs_dir).mkdir(parents=True, exist_ok=True)
 
 
 #  PARAMETERS
-TEMP_INTERSECTION_THRESHOLD = 64
+SEGMENT_LENGTH = 16
+TEMP_INTERSECTION_THRESHOLD = SEGMENT_LENGTH
 IOU_THRESHOLD = 0.2
 FRAME_PROPORTION = 0.1
-SEGMENT_LENGTH = 64
 SHIFT = 25
 
 
