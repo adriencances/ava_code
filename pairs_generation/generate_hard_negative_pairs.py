@@ -7,19 +7,22 @@ import tqdm
 from pathlib import Path
 import pickle
 
+from settings import Settings
 
-tracks_dir = "/home/acances/Data/Ava_v2.2/tracks"
-pairs_dir = "/home/acances/Data/Ava_v2.2/pairs16/"
+
+tracks_dir = Settings.tracks_dir
+pairs_dir = Settings.pairs_dir
 
 Path(pairs_dir).mkdir(parents=True, exist_ok=True)
 
 
 #  PARAMETERS
-SEGMENT_LENGTH = 16
-TEMP_INTERSECTION_THRESHOLD = SEGMENT_LENGTH
-IOU_THRESHOLD = 0.2
-FRAME_PROPORTION = 0.1
-SHIFT = 25
+SEGMENT_LENGTH = Settings.SEGMENT_LENGTH
+TEMP_INTERSECTION_THRESHOLD = Settings.TEMP_INTERSECTION_THRESHOLD
+IOU_THRESHOLD = Settings.IOU_THRESHOLD
+FRAME_PROPORTION = Settings.FRAME_PROPORTION
+MAX_PEOPLE_IN_SHOT = Settings.MAX_PEOPLE_IN_SHOT
+SHIFT = Settings.SHIFT
 
 
 def area2d(b):
@@ -122,6 +125,8 @@ def get_hard_negative_pairs_for_shot(file):
     nb_tracks = len(tracks)
 
     pairs = []
+    if nb_tracks > MAX_PEOPLE_IN_SHOT:
+        return pairs
     for i in range(nb_tracks):
         tr1, sc1 = tracks[i]
         for j in range(i + 1, nb_tracks):
@@ -151,7 +156,7 @@ def compute_hard_negative_pairs_for_video(video_id, cat):
             f.write(",".join(map(str, pair)) + "\n")
 
 
-if __name__ == "__main__":
+def compute_hard_negative_pairs():
     video_folders = glob.glob("{}/train/*".format(tracks_dir))
     video_folders += glob.glob("{}/val/*".format(tracks_dir))
 
@@ -159,3 +164,7 @@ if __name__ == "__main__":
         video_id = video_folder.split("/")[-1]
         cat = video_folder.split("/")[-2]
         compute_hard_negative_pairs_for_video(video_id, cat)
+
+
+if __name__ == "__main__":
+    compute_hard_negative_pairs()

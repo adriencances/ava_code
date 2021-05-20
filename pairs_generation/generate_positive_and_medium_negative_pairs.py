@@ -7,18 +7,21 @@ import tqdm
 from pathlib import Path
 import pickle
 
+from settings import Settings
 
-tracks_dir = "/home/acances/Data/Ava_v2.2/tracks"
-pairs_dir = "/home/acances/Data/Ava_v2.2/pairs16/"
+
+tracks_dir = Settings.tracks_dir
+pairs_dir = Settings.pairs_dir
 
 Path(pairs_dir).mkdir(parents=True, exist_ok=True)
 
 
 #  PARAMETERS
-SEGMENT_LENGTH = 16
-TEMP_INTERSECTION_THRESHOLD = SEGMENT_LENGTH
-IOU_THRESHOLD = 0.2
-FRAME_PROPORTION = 0.1
+SEGMENT_LENGTH = Settings.SEGMENT_LENGTH
+TEMP_INTERSECTION_THRESHOLD = Settings.TEMP_INTERSECTION_THRESHOLD
+IOU_THRESHOLD = Settings.IOU_THRESHOLD
+FRAME_PROPORTION = Settings.FRAME_PROPORTION
+MAX_PEOPLE_IN_SHOT = Settings.MAX_PEOPLE_IN_SHOT
 
 
 def area2d(b):
@@ -102,7 +105,7 @@ def get_pos_and_medneg_pairs_begin_frames_for_tracks(tr1, tr2):
 
     # Compute temporal intersection
     b1, e1 = tuple(map(int, tr1[[0, -1], 0]))
-    b2, e2 = tuple(map(int, [tr2[0][0], tr2[-1][0]]))
+    b2, e2 = tuple(map(int, tr2[[0, -1], 0]))
 
     b = max(b1, b2)
     e = min(e1, e2)
@@ -135,6 +138,8 @@ def get_pos_and_medneg_pairs_for_shot(file):
 
     pos_pairs = []
     medneg_pairs = []
+    if nb_tracks > MAX_PEOPLE_IN_SHOT:
+        return pos_pairs, medneg_pairs
     for i in range(nb_tracks):
         tr1, sc1 = tracks[i]
         for j in range(i + 1, nb_tracks):
@@ -176,7 +181,7 @@ def compute_pos_and_medneg_pairs_for_video(video_id, cat):
             f.write(",".join(map(str, pair)) + "\n")
 
 
-if __name__ == "__main__":
+def compute_pos_and_medneg_pairs():
     video_folders = glob.glob("{}/train/*".format(tracks_dir))
     video_folders += glob.glob("{}/val/*".format(tracks_dir))
 
@@ -184,3 +189,7 @@ if __name__ == "__main__":
         video_id = video_folder.split("/")[-1]
         cat = video_folder.split("/")[-2]
         compute_pos_and_medneg_pairs_for_video(video_id, cat)
+
+
+if __name__ == "__main__":
+    compute_pos_and_medneg_pairs()

@@ -8,16 +8,18 @@ from pathlib import Path
 import pickle
 import random as rd
 
+from count_pairs import get_nb_pairs
+from settings import Settings
 
-tracks_dir = "/home/acances/Data/Ava_v2.2/tracks"
-pairs_dir = "/home/acances/Data/Ava_v2.2/pairs16/"
+
+tracks_dir = Settings.tracks_dir
+pairs_dir = Settings.pairs_dir
 
 Path(pairs_dir).mkdir(parents=True, exist_ok=True)
 
 
 #  PARAMETERS
-SEGMENT_LENGTH = 16
-NB_PAIRS_BY_VIDEO_PAIR = 18
+SEGMENT_LENGTH = Settings.SEGMENT_LENGTH
 
 
 def random_element_of(L):
@@ -49,14 +51,21 @@ def get_random_segment(video_folder):
         return [video_id, shot_id, track_id, begin_frame, begin_frame + SEGMENT_LENGTH]
 
 
-def compute_easy_negative_pairs(cat):
+def compute_easy_negative_pairs_for_category(cat):
     video_folders = glob.glob("{}/{}/*".format(tracks_dir, cat))
+
+    nb_positives = get_nb_pairs(cat, "positive")
+    nb_pairs_wanted = nb_positives // 2
+    nb_videos = len(video_folders)
+    nb_video_pairs = nb_videos * (nb_videos - 1) // 2
+    nb_pairs_wanted_by_video_pair = int(np.ceil(nb_pairs_wanted / nb_video_pairs))
+
     pairs = []
     for id1 in tqdm.tqdm(range(len(video_folders))):
         video_folder_1 = video_folders[id1]
         for id2 in range(id1 + 1, len(video_folders)):
             video_folder_2 = video_folders[id2]
-            for i in range(NB_PAIRS_BY_VIDEO_PAIR):
+            for i in range(nb_pairs_wanted_by_video_pair):
                 segment_1 = get_random_segment(video_folder_1)
                 segment_2 = get_random_segment(video_folder_2)
                 pair = segment_1 + segment_2
@@ -69,6 +78,7 @@ def compute_easy_negative_pairs(cat):
         for pair in pairs:
             f.write(",".join(map(str, pair)) + "\n")
 
-if __name__ == "__main__":
-    compute_easy_negative_pairs("train")
-    compute_easy_negative_pairs("val")
+
+def compute_easy_negative_pairs():
+    compute_easy_negative_pairs_for_category("train")
+    compute_easy_negative_pairs_for_category("val")
