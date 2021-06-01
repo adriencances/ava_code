@@ -1,1 +1,3 @@
+visualisation_script.sh
 pairs_generation/__pycache__/*
+tracks_extraction/__pycache__/

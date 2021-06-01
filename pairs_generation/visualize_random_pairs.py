@@ -22,10 +22,12 @@ class RandomAvaPairs:
         self.frames_dir = "/media/hdd/adrien/Ava_v2.2/correct_frames"
         self.shots_dir = "/home/acances/Data/Ava_v2.2/final_shots"
         self.tracks_dir = "/home/acances/Data/Ava_v2.2/tracks"
-        self.pairs_dir = "/home/acances/Data/Ava_v2.2/pairs16"
+        self.pairs_dir = "/home/acances/Data/Ava_v2.2/pairs16_new"
 
-        self.output_dir = "/home/acances/Data/Ava_v2.2/random_AVA_pairs"
+        self.output_dir = "/home/acances/Data/Ava_v2.2/random_AVA_pairs_new"
         Path(self.output_dir).mkdir(exist_ok=True)
+        self.pos_info_file = "{}/positive_pairs_list.txt".format(self.output_dir)
+        self.neg_info_file = "{}/medium_negative_pairs_list.txt".format(self.output_dir)
 
         self.frame_processor = FrameProcessor(self.w, self.h, self.alpha, self.phase, self.frames_dir, self.shots_dir, self.tracks_dir)
 
@@ -45,9 +47,12 @@ class RandomAvaPairs:
                     self.positive_pairs.append(pair + [1])
         self.positive_pairs = random.sample(self.positive_pairs, self.nb_pairs)
         random.shuffle(self.positive_pairs)
+
+        with open(self.pos_info_file, "w") as f:
+            for pair in self.positive_pairs:
+                f.write("\t".join(map(str, pair)) + "\n")
     
     def gather_negative_pairs(self):
-        nb_medium_negatives = self.nb_pairs
         print("Gathering medium negative pairs")
         self.medium_negative_pairs = []
         pairs_files = glob.glob("{}/{}/medium_negative/*".format(self.pairs_dir, self.phase))
@@ -58,6 +63,10 @@ class RandomAvaPairs:
                     self.medium_negative_pairs.append(pair + [0])
         self.medium_negative_pairs = random.sample(self.medium_negative_pairs, self.nb_pairs)
         random.shuffle(self.medium_negative_pairs)
+
+        with open(self.neg_info_file, "w") as f:
+            for pair in self.medium_negative_pairs:
+                f.write("\t".join(map(str, pair)) + "\n")
     
     def get_pair_tensors(self, pair):
         video_id1, shot_id1, i1, begin1, end1, video_id2, shot_id2, i2, begin2, end2, label = pair

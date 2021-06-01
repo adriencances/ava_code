@@ -9,20 +9,17 @@ import pickle
 from os.path import expanduser
 import os.path as osp
 
-homedir = "/home/acances/Code/ava/tracks_extraction/laeonetplus-main/"
-mainsdir = osp.join(homedir, "mains")
-sys.path.insert(0, os.path.join(homedir,"utils"))
-sys.path.insert(0, os.path.join(homedir,"tracking"))
 
-from mj_tracksManager import TracksManager
-from ln_tracking_heads import process_video, track_forwards_backwards, process_tracks_parameters
+sys.path.append("/home/acances/Code/tracker")
+from people_detector import SortTracker
+
 
 # for reproducibility
 np.random.seed(0)
 
 shots_dir = "/home/acances/Data/Ava_v2.2/final_shots"
 detections_dir = "/home/acances/Data/Ava_v2.2/final_detectron2_detections"
-tracks_dir = "/home/acances/Data/Ava_v2.2/tracks"
+tracks_dir = "/home/acances/Data/Ava_v2.2/tracks_SORT"
 
 
 def get_shots(shots_file):
@@ -63,9 +60,17 @@ def compute_full_tracks_of_shot(shot, video_id, cat, shot_id):
     ending_frame = (t2 - t1)*N + (n2 - 1)
     assert ending_frame <= len(all_detections)
 
-    tracksb__ = track_forwards_backwards(all_detections, starting_frame, ending_frame,  OUT_TRACKS=[], tracking_case='backwards', verbose=False)
-    tracksbf__ = track_forwards_backwards(all_detections, starting_frame, ending_frame, OUT_TRACKS=tracksb__, tracking_case='forwards', verbose=False)
-    tracks = process_tracks_parameters(tracksbf__)
+    # Remove detections for frame outside the shot window
+    for i in range(starting_frame):
+        all_detections[i] = np.empty((0, 5))
+    for i in range(ending_frame, len(all_detections)):
+        all_detections[i] = np.empty((0, 5))
+
+    bboxes = [e[:,:4] if len(e) > 0 else np.empty((0, 4)) for e in all_detections]
+    scores = [e[:,-1] if len(e) > 0 else np.empty((0, 1)) for e in all_detections]
+
+    tracker = SortTracker()
+    tracks = tracker.track_bboxes(bboxes, scores)
 
     tracks_file = "{}/{}/{}/{:05d}_tracks.pkl".format(tracks_dir, cat, video_id, shot_id)
     Path("/".join(tracks_file.split("/")[:-1])).mkdir(parents=True, exist_ok=True)
@@ -78,6 +83,11 @@ def compute_tracks_for_shots_file(shots_file):
     shots = get_shots(shots_file)
     for shot_id, shot in tqdm.tqdm(list(enumerate(shots))):
         compute_full_tracks_of_shot(shot, video_id, cat, shot_id)
+
+def compute_tracks(video_id, shot_id):
+    shots_file = "{}/train/shots_{}.csv".format(shots_dir, video_id)
+    shots = get_shots(shots_file)
+    compute_full_tracks_of_shot(shots[shot_id], video_id, "train", shot_id)
 
 
 if __name__ == "__main__":
@@ -98,3 +108,9 @@ if __name__ == "__main__":
 
     for shots_file in tqdm.tqdm(shots_files):
         compute_tracks_for_shots_file(shots_file)
+
+
+    # video_id = sys.argv[1]
+    # shot_id = int(sys.argv[2])
+    # compute_tracks(video_id, shot_id)
+

@@ -9,12 +9,14 @@ import random
 from pathlib import Path
 
 
-pos_pairs_dir = "/home/acances/Data/Ava_v2.2/random_AVA_pairs/positive"
-medneg_pairs_dir = "/home/acances/Data/Ava_v2.2/random_AVA_pairs/medium_negative"
+main_dir = "/home/acances/Data/Ava_v2.2/random_AVA_pairs_new"
 
-pos_videos_dir = "/home/acances/Data/Ava_v2.2/random_AVA_pairs/videos/positive"
+pos_pairs_dir = "{}/positive".format(main_dir)
+medneg_pairs_dir = "{}/medium_negative".format(main_dir)
+
+pos_videos_dir = "{}/videos/positive".format(main_dir)
 Path(pos_videos_dir).mkdir(parents=True, exist_ok=True)
-medneg_videos_dir = "/home/acances/Data/Ava_v2.2/random_AVA_pairs/videos/medium_negative"
+medneg_videos_dir = "{}/videos/medium_negative".format(main_dir)
 Path(medneg_videos_dir).mkdir(parents=True, exist_ok=True)
 
 
@@ -31,7 +33,6 @@ def make_video(name, subdir, output_dir):
         video.write(cv2.imread(os.path.join(subdir, image)))
     cv2.destroyAllWindows()
     video.release()
-
 
 
 def make_pos_videos():
